@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 140, 0;
+  --background-rgb: 0, 0, 0;
+  --outline-rgb: 30, 30, 30;
+  --muted-rgb: 138, 138, 138;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+}
+
+.terminal-glow {
+  text-shadow: 0 0 10px #ff8c00;
+}
+
+.terminal-border {
+  border: 1px solid #1e1e1e;
+}
+
+.terminal-bg {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.matrix-text {
+  color: #ff8c00;
+}
+
+.matrix-dim {
+  color: #8a8a8a;
+}
+
+.matrix-dark {
+  color: #090;
+}
+
+.section-title {
+  color: #ff8c00;
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  border-bottom: 1px solid #1e1e1e;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.hover-overlay:hover {
+  background: rgba(255, 140, 0, 0.08);
+}
+
+.focus-outline:focus {
+  outline: 1px dotted #ff8c00;
+  outline-offset: 2px;
+}
+
+.focus-outline:focus-visible {
+  outline: 1px dotted #ff8c00;
+  outline-offset: 2px;
+}
+
+@keyframes matrix-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.matrix-flicker {
+  animation: matrix-flicker 2s infinite;
+} 
