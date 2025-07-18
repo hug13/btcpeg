@@ -61,7 +61,7 @@ export default async function ChartPage({ params }: ChartPageProps) {
         {/* Chart */}
         <div className="terminal-border bg-black p-6 focus-outline" tabIndex={0}>
           <div className="text-muted text-sm mb-4">Price History</div>
-          <div className="h-64 md:h-80">
+          <div className="h-80 md:h-96">
             <PriceChart data={chartData} />
           </div>
         </div>
