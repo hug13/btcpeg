@@ -27,7 +27,10 @@ export default function PriceChart({ data }: PriceChartProps) {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart data={data}>
+      <LineChart 
+        data={data}
+        margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+      >
         <XAxis 
           dataKey="month" 
           tick={{ fill: '#888', fontSize: 12 }}
@@ -53,10 +56,10 @@ export default function PriceChart({ data }: PriceChartProps) {
         <Line
           type="monotone"
           dataKey="value"
-          stroke="#22ff55"
-          strokeWidth={2}
-          dot={{ fill: '#22ff55', strokeWidth: 2, r: 4 }}
-          activeDot={{ r: 6, stroke: '#22ff55', strokeWidth: 2 }}
+          stroke="#cc4444"
+          strokeWidth={2.5}
+          dot={{ fill: '#cc4444', strokeWidth: 0, r: 2 }}
+          activeDot={{ r: 4, stroke: '#cc4444', strokeWidth: 2, fill: '#cc4444' }}
         />
       </LineChart>
     </ResponsiveContainer>
