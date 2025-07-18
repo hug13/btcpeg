@@ -2,7 +2,7 @@ import React from 'react';
 import { upstash } from '../lib/upstash';
 import { fmtHashrate, fmtDifficulty } from '../lib/format';
 import StatCard from '../components/StatCard';
-import Sparkline from '../components/Sparkline';
+import PriceRowWithSparkline from '../components/PriceRowWithSparkline';
 import PriceRowClient from '../components/PriceRowClient';
 import Message from '../components/Message';
 
@@ -34,7 +34,9 @@ export default async function Home() {
               1 BTC = 1 BTC
             </h1>
             <div className="flex justify-center mb-4">
-              <Sparkline width={600} height={130} />
+              <div className="text-matrix-bright font-mono text-sm">
+                ₿ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ₿
+              </div>
             </div>
           </div>
           <p className="text-muted text-sm">
@@ -82,7 +84,7 @@ export default async function Home() {
                   const priceKey = `${currency}BTC` as keyof typeof lastPrices;
                   const price = lastPrices?.[priceKey];
                   return (
-                    <PriceRowClient
+                    <PriceRowWithSparkline
                       key={currency}
                       currency={currency}
                       btcPrice={price || '0'}
@@ -105,7 +107,7 @@ export default async function Home() {
                   const priceKey = `${commodity}BTC` as keyof typeof lastPrices;
                   const price = lastPrices?.[priceKey];
                   return (
-                    <PriceRowClient
+                    <PriceRowWithSparkline
                       key={commodity}
                       currency={commodity}
                       btcPrice={price || '0'}
@@ -116,12 +118,12 @@ export default async function Home() {
                 {/* Oil Prices */}
                 {crudeOil && (
                   <>
-                    <PriceRowClient
+                    <PriceRowWithSparkline
                       currency="WTI"
                       btcPrice={(1 / crudeOil.WTI_price_usd * parseFloat(lastPrices?.USDBTC || '0')).toFixed(8)}
                       changePercent={crudeOil.WTI_change_pct}
                     />
-                    <PriceRowClient
+                    <PriceRowWithSparkline
                       currency="BRENT"
                       btcPrice={(1 / crudeOil.BRENT_price_usd * parseFloat(lastPrices?.USDBTC || '0')).toFixed(8)}
                       changePercent={crudeOil.BRENT_change_pct}

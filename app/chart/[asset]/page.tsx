@@ -1,7 +1,7 @@
 import React from 'react';
-import { upstash } from '../../../lib/upstash';
+import { fetchMonthlyHistory } from '../../../lib/supa';
 import { fmtBTC, fmtCurrency } from '../../../lib/format';
-// import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import PriceChart from '../../../components/PriceChart';
 
 interface ChartPageProps {
   params: Promise<{
@@ -12,25 +12,21 @@ interface ChartPageProps {
 export default async function ChartPage({ params }: ChartPageProps) {
   const { asset } = await params;
   
-  // Fetch current price and history
-  const [lastPrices, history] = await Promise.all([
-    upstash.getLastPrices(),
-    upstash.getHistory(asset),
-  ]);
+  // Fetch historical data from Supabase
+  const historyData = await fetchMonthlyHistory(asset);
+  
+  // Transform data for chart
+  const chartData = historyData.map((point) => ({
+    month: new Date(point.month).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short' 
+    }),
+    value: parseFloat(point.btc_value),
+    fullDate: point.month
+  }));
 
-  // Get current price for this asset
-  const priceKey = `${asset.toUpperCase()}BTC` as keyof typeof lastPrices;
-  const currentPrice = lastPrices?.[priceKey];
-
-  // Generate mock data if no history available
-  const chartData = history?.map((point) => ({
-    date: new Date(point.t).toLocaleDateString(),
-    value: parseFloat(point.v.toString()),
-  })) || [
-    { date: '2024-01-01', value: parseFloat(currentPrice || '0') },
-    { date: '2024-01-02', value: parseFloat(currentPrice || '0') },
-    { date: '2024-01-03', value: parseFloat(currentPrice || '0') },
-  ];
+  // Get current price (latest value)
+  const currentPrice = chartData.length > 0 ? chartData[chartData.length - 1].value : 0;
 
   return (
     <div className="min-h-screen p-4 md:p-6 lg:p-8">
@@ -58,40 +54,36 @@ export default async function ChartPage({ params }: ChartPageProps) {
         <div className="terminal-border bg-black p-6 mb-6 focus-outline" tabIndex={0}>
           <div className="text-muted text-sm mb-2">Current Price</div>
           <div className="text-matrix-bright text-3xl font-mono terminal-glow">
-            {fmtBTC(currentPrice || '0')} BTC
+            {fmtBTC(currentPrice.toString())} BTC
           </div>
         </div>
 
         {/* Chart */}
         <div className="terminal-border bg-black p-6 focus-outline" tabIndex={0}>
           <div className="text-muted text-sm mb-4">Price History</div>
-          <div className="h-96 flex items-center justify-center">
-            <div className="text-muted text-center">
-              <div className="text-4xl mb-4">📊</div>
-              <div>Chart visualization</div>
-              <div className="text-sm">Coming soon...</div>
-            </div>
+          <div className="h-64 md:h-80">
+            <PriceChart data={chartData} />
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="terminal-border bg-black p-4 focus-outline" tabIndex={0}>
-            <div className="text-muted text-sm mb-2">24h High</div>
+            <div className="text-muted text-sm mb-2">Latest Price</div>
             <div className="text-matrix-bright text-xl font-mono">
-              {fmtBTC(currentPrice || '0')} BTC
+              {fmtBTC(currentPrice.toString())} BTC
             </div>
           </div>
           <div className="terminal-border bg-black p-4 focus-outline" tabIndex={0}>
-            <div className="text-muted text-sm mb-2">24h Low</div>
+            <div className="text-muted text-sm mb-2">Data Points</div>
             <div className="text-matrix-bright text-xl font-mono">
-              {fmtBTC(currentPrice || '0')} BTC
+              {chartData.length}
             </div>
           </div>
           <div className="terminal-border bg-black p-4 focus-outline" tabIndex={0}>
-            <div className="text-muted text-sm mb-2">24h Volume</div>
+            <div className="text-muted text-sm mb-2">Timeframe</div>
             <div className="text-matrix-bright text-xl font-mono">
-              N/A
+              Monthly
             </div>
           </div>
         </div>

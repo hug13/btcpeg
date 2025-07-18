@@ -1,56 +1,20 @@
-import React from 'react';
-import { fmtBTC, fmtCurrency, getPercentColor } from '../lib/format';
+import Sparkline from '@/components/Sparkline';
+import { fetchMonthlyHistory } from '@/lib/supa';
 
-interface PriceRowProps {
-  currency: string;
-  btcPrice: string;
-  changePercent?: number;
-  onClick?: () => void;
-  className?: string;
-}
+export default async function PriceRow({ asset }: { asset: string }) {
+  const raw = await fetchMonthlyHistory(asset);
+  const data = raw.map(r => ({ btc: parseFloat(r.btc_value) }));
+  const latest = data.length > 0 ? data[data.length - 1].btc.toLocaleString('en-US', {
+    maximumFractionDigits: 13
+  }) : '0';
 
-export default function PriceRow({ 
-  currency, 
-  btcPrice, 
-  changePercent, 
-  onClick,
-  className = '' 
-}: PriceRowProps) {
   return (
-    <div 
-      className={`
-        flex items-center justify-between p-3 
-        terminal-border terminal-bg 
-        hover:bg-matrix-dark hover:bg-opacity-10 
-        cursor-pointer transition-colors
-        ${className}
-      `}
-      onClick={onClick}
-    >
-      <div className="flex items-center space-x-3">
-        <div className="text-matrix-bright font-mono text-sm font-semibold">
-          {currency}
-        </div>
-        <div className="text-matrix-dim text-xs">
-          {fmtCurrency(currency)}
-        </div>
-      </div>
-      
-      <div className="flex items-center space-x-3">
-        <div className="text-matrix-bright font-mono text-sm terminal-glow">
-          {fmtBTC(btcPrice)} BTC
-        </div>
-        
-        {changePercent !== undefined && (
-          <div className={`text-xs font-mono ${getPercentColor(changePercent)}`}>
-            {changePercent > 0 ? '+' : ''}{changePercent.toFixed(2)}%
-          </div>
-        )}
-        
-        <div className="text-matrix-dim text-xs">
-          →
-        </div>
-      </div>
-    </div>
+    <tr className="group cursor-pointer">
+      <td className="py-2">{asset.toUpperCase()}</td>
+      <td className="text-right font-mono">{latest}</td>
+      <td>
+        <Sparkline data={data} />
+      </td>
+    </tr>
   );
 } 

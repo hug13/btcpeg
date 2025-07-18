@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { fmtBTC, fmtCurrency, getPercentColor } from '../lib/format';
+import Sparkline from './Sparkline';
 
 interface PriceRowClientProps {
   currency: string;
   btcPrice: string;
   changePercent?: number;
+  sparklineData?: { btc: number }[];
   className?: string;
 }
 
@@ -14,6 +16,7 @@ export default function PriceRowClient({
   currency, 
   btcPrice, 
   changePercent,
+  sparklineData,
   className = '' 
 }: PriceRowClientProps) {
   const handleClick = () => {
@@ -59,6 +62,12 @@ export default function PriceRowClient({
         {changePercent !== undefined && (
           <div className={`text-xs font-mono ${getPercentColor(changePercent)}`}>
             {changePercent > 0 ? '+' : ''}{changePercent.toFixed(2)}%
+          </div>
+        )}
+        
+        {sparklineData && sparklineData.length > 0 && (
+          <div className="ml-2">
+            <Sparkline data={sparklineData} />
           </div>
         )}
         
